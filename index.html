@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Show bldg sqft on hover</title>
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v0.44.1/mapbox-gl.css" rel="stylesheet">
+
+
+    
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 1.2em;
+      }
+
+      h3 {
+        font-size: 1em;
+      }
+
+      p {
+        font-size: 0.85em;
+        margin: 10px;
+        text-align: left;
+		}
+		     
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 100;
+        background: rgba(255, 255, 255, 0.8);
+        margin-right: 20px;
+        font-family: Calibri;
+		color: #3B515E
+		overflow: auto;
+        border-radius: 3px;
+		
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+	   }
+
+      #features {
+        top: 0;
+        height: auto;
+        margin-top: 0px;
+        width: auto;
+		
+      }
+
+      #demo {
+        /* To play around, change this to absolute */
+        position: fixed;
+        bottom: 0px;
+        right: 0px;
+        z-index: 1;
+        padding: 0px;
+        margin: 0px;
+		}
+  .legend {
+        background-color: #fff;
+        border-radius: 3px;
+        bottom: 250px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        padding: 10px;
+        position: absolute;
+        right: 10px;
+        z-index: 1;
+      }
+
+      .legend h4 {
+        margin: 0 0 10px;
+      }
+
+      .legend p {
+        margin-left: 30px;
+        position: absolute;
+        display: block;
+        top: 0;
+      }
+
+      .legend div {
+        position: relative;
+      }
+
+      .legend div span {
+        border-radius: 25%;
+        display: inline-block;
+        margin-right: 5px;
+        opacity: .8;
+        background-color: #fff;
+      }
+
+      #legend {
+        padding: 10px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+        line-height: 18px;
+        height: 325px;
+        margin-bottom: 40px;
+        width: 100px;
+      }
+
+      .legend-key {
+        display: inline-block;
+        border-radius: 20%;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+	  
+      .redirect {
+        background-color: #3887be;
+        border-radius: 3px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font: 12px/20px Calibri;
+		padding: 10px;
+        position: absolute;
+        right: 10px;
+		top: 100px;
+        z-index: 1;
+		text-align:center;
+		color: white;
+		width: 100px;
+	  }
+	  
+      .add-info {
+        background-color: #3887be;
+        border-radius: 3px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        font: 12px/20px Calibri;
+		padding: 10px;
+        position: absolute;
+        right: 160px;
+		bottom: 60px;
+        z-index: 1;
+		text-align:center;
+		color: white;
+		width: 100px;
+	  }	
+	  
+
+
+}</style>
+	  
+	    </style>
+
+ <style>
+
+a {
+text-decoration: none; 
+}
+</style> 
+  </head>
+
+  <body>
+    
+    <div id="map" class="mapboxgl-map">
+      <div class="mapboxgl-missing-css">Missing Mapbox GL JS CSS</div>
+      <div class="mapboxgl-canvas-container mapboxgl-interactive mapboxgl-touch-drag-pan mapboxgl-touch-zoom-rotate">
+		  <canvas class="mapboxgl-canvas" tabindex="0" aria-label="Map" width="150" height="831" style="position: absolute; width: 150px; height: 831px; cursor: default;">
+		  </canvas>
+	  </div>
+      <div class="mapboxgl-control-container">
+        <div class="mapboxgl-ctrl-top-left"></div>
+        <div class="mapboxgl-ctrl-top-right"></div>
+        <div class="mapboxgl-ctrl-bottom-left">
+          <div class="mapboxgl-ctrl" style="display: block;"><a class="mapboxgl-ctrl-logo" target="_blank" href="https://www.mapbox.com/" aria-label="Mapbox logo"></a></div>
+        </div>
+        <div class="mapboxgl-ctrl-bottom-right">
+          <div class="mapboxgl-ctrl mapboxgl-ctrl-attrib mapboxgl-compact">
+            <a href="https://www.mapbox.com/about/maps/" target="_blank">© Mapbox</a>
+            <a href="http://www.openstreetmap.org/about/" target="_blank">© OpenStreetMap</a> <a class="mapbox-improve-map" href="https://www.mapbox.com/feedback/?owner=examples&amp;id=cj2civacd00302rogivh6xbx2&amp;access_token=pk.eyJ1IjoiZXhhbXBsZXMiLCJhIjoiY2lqbmpqazdlMDBsdnRva284cWd3bm11byJ9.V6Hg2oYJwMAxeoR9GEzkAA"
+              target="_blank">Improve this map</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-overlay" id="features">
+      <h3>Hypothetical Insight Neighborhood Guide </h3>
+      <div id="pd">
+        <p>Hover over a neighborhood</p>
+      </div>   
+	</div>
+	
+    <div id='legend' class='legend'>
+      <h3 style="font-family:calibri;">Neighborhood Grade</h3>
+    </div>
+	
+		
+    <script>
+	let showFeatureInfo, toggleCheck = false;
+      // define access token
+	  
+      mapboxgl.accessToken = 'pk.eyJ1IjoiaW52ZXN0aHlwb3RoZXRpY2FsIiwiYSI6ImNqbjBucGl0bTAxcmkzcG5nZzRtdnVyanIifQ.aLtDerXz9Zd5qrZppRMNrg';
+      //create map
+      var map = new mapboxgl.Map({
+        container: 'map', // container id
+        style: 'mapbox://styles/investhypothetical/cjt6brvml5eug1ekinvqwktsm' // map style URL from Mapbox Studio
+      });     
+      // wait for map to load before adjusting it
+      map.on('load', function() {
+	  
+
+        // make a pointer cursor
+        // map.getCanvas().style.cursor = 'default';
+        // set map bounds to the continental US
+        map.fitBounds([
+          [-78.857716, 33.7113756],
+          [-98.857716, 53.7113756]
+        ]);
+    // define layer names
+        var layers = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D', '<h4>MultiFamily Listings</h4>', 'Single Family', 'MultiFamily'];
+        var colors = ['#378b1d', '#25c736', '#cdfed6', '#d0f7c2', '#ffe9b4', '#ffd56e', '#ffa780', '#ff6f30', '#d64e2a', '#f83062', '#fff', '#857548' , '#567C87'];
+        // create legend
+        for (i = 0; i < layers.length; i++) {
+          var layer = layers[i];
+          var color = colors[i];
+          var item = document.createElement('div');
+          var key = document.createElement('span');
+          key.className = 'legend-key';
+          key.style.backgroundColor = color;
+          var value = document.createElement('span');
+          value.innerHTML = layer;
+          item.appendChild(key);
+          item.appendChild(value);
+          legend.appendChild(item);
+        }
+        // change info window on hover
+		
+       
+		
+		showFeatureInfo = function(e) {
+		var parcels = map.queryRenderedFeatures(e.point, {
+            layers: ['Active Listings' , 'hamilton neighborhoods']
+          });
+		  
+		  if (parcels.length > 0) {
+			let noteString = '';
+			parcels[0].properties && parcels[0].properties.Notes && parcels[0].properties.Notes.split(' ').forEach((w, i) => {
+				if (i !== 0 && i % 7 === 0) {
+					noteString += w + '<br/>';
+				} else {
+					noteString += w + ' ';
+				}
+			}) 
+            document.getElementById('pd').innerHTML =
+   		   
+			  `${parcels[0].properties.Desc_link ? '<p>' + parcels[0].properties.Desc_link : ''}` +
+			  "</p>";
+          } else {
+            document.getElementById('pd').innerHTML = '<p>Hover over a neighborhood</p>';
+           }           		  
+		 }
+		 
+		map.on('mousemove', showFeatureInfo);
+		 
+		
+      });
+	  
+ 
+	// change info window on hover
+      //var toggleableLayerIds = ['Active Listings'];
+
+      for (var i = 0; i < toggleableLayerIds.length; i++) {
+        var id = toggleableLayerIds[i];
+
+        var link = document.createElement('a');
+        link.href = '#';
+        link.className = 'active';
+        link.textContent = id;
+
+        link.onclick = function(e) {
+          var clickedLayer = this.textContent;
+          e.preventDefault();
+          e.stopPropagation();
+		  
+		const features =  map.querySourceFeatures('composite', {
+		sourceLayer : "Active_Listings_20181005-5nlvw1"
+		});
+		
+		features.forEach(marker => {
+			var el = document.createElement('div');
+			el.style.backgroundImage = "url(https://www.iconsdb.com/icons/preview/soylent-red/map-marker-2-xxl.png)";
+			el.style.width = '20px';
+			el.style.height = '20px';
+			
+			el.addEventListener('click', function(){
+				toggleCheck = !toggleCheck
+				if (toggleCheck) {
+					map.off('mousemove', showFeatureInfo)
+				} else {
+					map.on('mousemove', showFeatureInfo)
+				}
+			});
+
+			// add marker to map
+			new mapboxgl.Marker(el)
+				.setLngLat(marker.geometry.coordinates)
+				.addTo(map);
+		});		  
+
+          var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+          if (visibility === 'visible') {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+            this.className = 'active';
+          } else {
+            this.className = '';
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+          }
+        };
+
+        var layers = document.getElementById('menu');
+        layers.appendChild(link);
+      }
+	  
+	     
+	</script>
+    <!-- <script> -->
+      <!-- map.addControl(new MapboxGeocoder({ -->
+        <!-- accessToken: mapboxgl.accessToken -->
+      <!-- })); -->
+
+    <!-- </script> -->
+
+  </body>
+</html>
